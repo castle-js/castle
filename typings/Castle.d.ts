@@ -48,9 +48,8 @@ declare namespace Castle {
         collection:   (expectedCollection: typeof Collection) => CanBeOptional<any>,
     };
 
-
 }
 
 declare module "castle" {
-    export default Castle
+    export = Castle;
 }

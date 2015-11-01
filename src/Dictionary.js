@@ -17,7 +17,7 @@ const symbols = {
 };
 
 
-const Dictionary = module.exports = CBase.extend(function Dictionary(data) {
+const Dictionary = module.exports = CBase.extend("Dictionary", function(data) {
 
     if (this.constructor[symbols.skipInit]) {
         return

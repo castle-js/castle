@@ -1,15 +1,15 @@
-'use strict';
+"use strict";
 
 module.exports = function validateExtentionStaticPropery(objectKey) {
 
-    var staticObject = this.constructor[objectKey];
-    var superProtorype = Object.getPrototypeOf(this.constructor.prototype);
+    let staticObject = this.constructor[objectKey];
+    let superProtorype = Object.getPrototypeOf(this.constructor.prototype);
 
     if (superProtorype == null) {
         return;
     }
 
-    var superStaticObject = superProtorype.constructor[objectKey];
+    let superStaticObject = superProtorype.constructor[objectKey];
 
     if (superStaticObject instanceof Object) {
         for (let key in superStaticObject) {

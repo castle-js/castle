@@ -8,12 +8,12 @@ module.exports = function() {
     let staticProps;
     let props;
 
+    if (typeof args[0] === "string") {
+        name = args.splice(0, 1)[0];
+    }
     if (typeof args[0] === "function") {
         pureConstructor = args.splice(0, 1)[0];
-        name = pureConstructor.name;
-    }
-    if (!name && typeof args[0] === "string") {
-        name = args.splice(0, 1)[0];
+        name = name || pureConstructor.name;
     }
     if (typeof args[0] === "object") {
         staticProps = args.splice(0, 1)[0];

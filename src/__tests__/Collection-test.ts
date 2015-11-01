@@ -2,20 +2,19 @@
 
 import checkers from "./_castleCheckers";
 
-import Castle from "castle";
-
+import { Dictionary, Collection, PropTypes } from "castle";
 
 describe("Collections", () => {
 
     describe("initialization", () => {
 
-        class Car extends Castle.Dictionary {
+        class Car extends Dictionary {
             static schema = {
-                wheels: Castle.PropTypes.number
+                wheels: PropTypes.number
             }
         }
 
-        class Cars extends Castle.Collection {
+        class Cars extends Collection {
             static type = Car;
         }
 

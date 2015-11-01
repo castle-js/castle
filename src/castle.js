@@ -1,11 +1,14 @@
 
+const PropTypes  = require("./PropTypes");
+const Dictionary = require("./Dictionary");
+const Collection = require("./Collection");
+const Immutable  = require("immutable");
 
-const Castle = {
-    PropTypes  : require('./PropTypes'),
-    Dictionary : require('./Dictionary'),
-    CBase      : require('./CBase'),
-    Collection : require('./Collection')
+export const Castle = {
+    PropTypes  : PropTypes,
+    Dictionary : Dictionary,
+    Collection : Collection,
+    Immutable  : Immutable
 };
 
-export { Castle as default }
-export { Castle as Castle }
+export { PropTypes, Dictionary, Collection, Immutable }

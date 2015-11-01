@@ -30,8 +30,6 @@ function typeCheckPass(declaration, value) {
 }
 
 describe("PropTypes", function() {
-    beforeEach(function() {
-    });
 
     describe("Primitive Types", function() {
         it("should warn for invalid strings", function() {

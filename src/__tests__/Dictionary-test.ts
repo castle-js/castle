@@ -1,7 +1,7 @@
 "use strict";
 
 import checkers from "./_castleCheckers";
-import Castle from "castle";
+import * as Castle from "castle";
 
 describe("Dictionary", function() {
 

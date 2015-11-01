@@ -1,7 +1,7 @@
 var path = require("path");
 var webpack = require("webpack");
 
-var isProduction = process.argv.indexOf("-p") != -1;
+var isProduction = process.env.isProduction === "true";
 
 module.exports = {
     context: __dirname + "/src",
@@ -12,6 +12,7 @@ module.exports = {
         ].filter(function(e) { return e != null})
     },
     output: {
+        library: "Castle",
         path: path.join(__dirname, "dist"),
         publicPath: "/dist/",
         filename: "[name].js",
@@ -42,7 +43,7 @@ module.exports = {
     resolveLoader: {
         root:  path.join(__dirname, "node_modules")
     },
-    externals: {},
+    //externals: [ "immutable" ],
     resolve: {
         root: root,
         modulesDirectories: ["node_modules", "."],
@@ -52,18 +53,26 @@ module.exports = {
         new webpack.DefinePlugin({
             __DEV__:       !isProduction,
             __PRODUCTION__: isProduction
-        }),
-        //new webpack.optimize.UglifyJsPlugin({
-        //    mangle: false
-        //})
+        })
     ],
     devServer: {
         stats: {
             cached: false,
             exclude: []
         },
-        port: 8887
+        host: process.env.host || "localhost",
+        port: process.env.port || 8887
     }
 
 };
 
+if (isProduction) {
+    module.exports.plugins = module.exports.plugins.concat([
+        new webpack.optimize.UglifyJsPlugin({
+            mangle: {
+                except: ["CBase"]
+            }
+        }),
+        new webpack.optimize.OccurenceOrderPlugin()
+    ]);
+}

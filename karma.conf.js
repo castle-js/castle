@@ -1,15 +1,9 @@
-var webpack = require("webpack");
-var webpackConfig = require("./webpack.config.js");
-
-delete webpackConfig.output;
-delete webpackConfig.devServer;
-delete webpackConfig.entry;
-//webpackConfig.plugins.push(require("karma-webpack"))
+"use strict";
 
 module.exports = function (config) {
     config.set({
 
-        browsers: [ "Chrome", "PhantomJS2" ],
+        browsers: process.env.browsers && process.env.browsers.split(',') || [ "PhantomJS2" ],
 
         singleRun: true,
 
@@ -25,7 +19,7 @@ module.exports = function (config) {
 
         reporters: [ "progress" ],
 
-        webpack: webpackConfig,
+        webpack: require("./webpack.config.js"),
 
         webpackServer: {
             noInfo: true

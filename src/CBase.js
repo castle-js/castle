@@ -1,7 +1,8 @@
 
 const symbols = require('./symbols');
 
-const CBase = module.exports = function CBase () {};
+function CBase() {}
+module.exports = CBase;
 
 CBase.extend = require('./lib/extend');
 

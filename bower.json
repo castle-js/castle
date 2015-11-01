@@ -1,0 +1,31 @@
+{
+  "name": "castle",
+  "description": "Immutable dictionaries ands collections, guaranteed to be valid and sanitized",
+  "main": "dist/castle.js",
+  "authors": [
+    "Andrey Kogut"
+  ],
+  "license": "ISC",
+  "keywords": [
+    "js",
+    "immutable",
+    "dictionary",
+    "model",
+    "collection",
+    "validation",
+    "schema",
+    "react"
+  ],
+  "homepage": "http://castle-js.github.io/",
+  "moduleType": [
+    "amd",
+    "es6",
+    "globals",
+    "node"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ]
+}

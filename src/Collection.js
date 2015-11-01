@@ -18,62 +18,63 @@ const symbols = {
 };
 
 
-const Collection = module.exports = CBase.extend(function Collection(objects) {
+const Collection = module.exports = CBase.extend("Collection", function (objects) {
 
-    if (this.constructor[symbols.skipInit]) {
-        return;
-    }
-
-    if (this.constructor.hasOwnProperty("type")) {
-        let type = this.constructor.type;
-        delete this.constructor.type;
-        this.constructor.setType(type);
-    }
-
-    // XXX
-    let dictionaryConstructor = this.constructor[symbols.type] || {};
-
-    let metError  = null;
-
-    if (objects == null || Array.isArray(objects) === false) {
-        throw new Error("No data provided in Collection constructor");
-    }
-    if (typeof dictionaryConstructor !== "function" || dictionaryConstructor.prototype instanceof Dictionary === false && dictionaryConstructor !== Dictionary) {
-        throw new Error("`type` static propry must be a Dictionary constructor");
-    }
-
-    for (let i = 0; i < objects.length; i++) {
-
-        switch(true) {
-            case objects[i] instanceof dictionaryConstructor:
-                break;
-            default:
-                if (objects.__environment != null) {
-                    let e = objects.__environment;
-                    metError = PropTypes.dictionary(dictionaryConstructor)(objects, i, e.componentName, e.location, `${e.propFullName}[${i}]`);
-                } else {
-                    metError = PropTypes.dictionary(dictionaryConstructor)(objects, i, this.constructor.name);
-                }
-                break;
+        if (this.constructor[symbols.skipInit]) {
+            return;
         }
 
-        if (metError != null) {
-            break;
+        if (this.constructor.hasOwnProperty("type")) {
+            let type = this.constructor.type;
+            delete this.constructor.type;
+            this.constructor.setType(type);
         }
 
-    }
+        // XXX
+        let dictionaryConstructor = this.constructor[symbols.type] || {};
 
-    if(metError) {
-        if (this.constructor[symbols.serializing] === true) {
-            this[symbols.serializationError] = metError;
+        let metError  = null;
+
+        if (objects == null || Array.isArray(objects) === false) {
+            throw new Error("No data provided in Collection constructor");
+        }
+        if (typeof dictionaryConstructor !== "function" || dictionaryConstructor.prototype instanceof Dictionary === false && dictionaryConstructor !== Dictionary) {
+            throw new Error("`type` static propry must be a Dictionary constructor");
+        }
+
+        for (let i = 0; i < objects.length; i++) {
+
+            switch(true) {
+                case objects[i] instanceof dictionaryConstructor:
+                    break;
+                default:
+                    if (objects.__environment != null) {
+                        let e = objects.__environment;
+                        metError = PropTypes.dictionary(dictionaryConstructor)(objects, i, e.componentName, e.location, `${e.propFullName}[${i}]`);
+                    } else {
+                        metError = PropTypes.dictionary(dictionaryConstructor)(objects, i, this.constructor.name);
+                    }
+                    break;
+            }
+
+            if (metError != null) {
+                break;
+            }
+
+        }
+
+        if(metError) {
+            if (this.constructor[symbols.serializing] === true) {
+                this[symbols.serializationError] = metError;
+            } else {
+                throw metError;
+            }
         } else {
-            throw metError;
+            this[symbols.underlyingIterable] = Immutable.List(objects);
         }
-    } else {
-        this[symbols.underlyingIterable] = Immutable.List(objects);
-    }
 
-});
+    }
+);
 
 Collection[symbols.type] = Dictionary;
 
