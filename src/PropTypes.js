@@ -2,17 +2,17 @@
 
 const PropTypes = {
 
-    array:        createPrimitiveTypeChecker("array"),
-    bool:         createPrimitiveTypeChecker("boolean"),
-    func:         createPrimitiveTypeChecker("function"),
-    number:       createPrimitiveTypeChecker("number"),
-    object:       createPrimitiveTypeChecker("object"),
-    string:       createPrimitiveTypeChecker("string"),
+    array:  createPrimitiveTypeChecker("array"),
+    bool:   createPrimitiveTypeChecker("boolean"),
+    func:   createPrimitiveTypeChecker("function"),
+    number: createPrimitiveTypeChecker("number"),
+    object: createPrimitiveTypeChecker("object"),
+    string: createPrimitiveTypeChecker("string"),
 
-    arrayOf:      createArrayOfTypeChecker,
-    instanceOf:   createInstanceTypeChecker,
-    dictionary:   createDictionaryTypeChecker,
-    collection:   createCollectionTypeChecher
+    arrayOf:             createArrayOfTypeChecker,
+    instanceOf:          createInstanceTypeChecker,
+    immutableDictionary: createImmutableDictionaryTypeChecker,
+    immutableCollection: createImmutableCollectionTypeChecher
 
 };
 
@@ -104,25 +104,25 @@ function createInstanceTypeChecker(expectedClass) {
     return createChainableTypeChecker(validate);
 }
 
-function createDictionaryTypeChecker(dictionaryConstructor) {
+function createImmutableDictionaryTypeChecker(immutableDictionaryConstructor) {
     function validate(props, propName, componentName, location, propFullName) {
 
         let propValue = props[propName];
 
         switch (true) {
-            case (propValue instanceof dictionaryConstructor):
+            case (propValue instanceof immutableDictionaryConstructor):
                 return null;
             case (getClassName(propValue) == "Object"):
                 let validationErrorOrNull = null;
-                dictionaryConstructor.serialize(
+                immutableDictionaryConstructor.serialize(
                     propValue,
                     (error) => validationErrorOrNull = error,
-                    (dictionary) => props[propName] = dictionary
+                    (immutableDictionary) => props[propName] = immutableDictionary
                 );
                 return validationErrorOrNull;
             default:
                 let locationName = ReactPropTypeLocationNames[location];
-                let expectedClassName = dictionaryConstructor.name || ANONYMOUS;
+                let expectedClassName = immutableDictionaryConstructor.name || ANONYMOUS;
                 return new Error(`Invalid ${locationName} \`${propFullName}\` of type \`${getClassName(propValue)}\` supplied to \`${componentName}\`, expected instance of \`${expectedClassName}\` or an \`object\`.`);
         }
     }
@@ -131,14 +131,14 @@ function createDictionaryTypeChecker(dictionaryConstructor) {
 }
 
 
-function createCollectionTypeChecher(collectionConstructor) {
+function createImmutableCollectionTypeChecher(immutableCollectionConstructor) {
     function validate(props, propName, componentName, location, propFullName) {
 
         let propValue = props[propName];
 
         switch(true) {
 
-            case propValue instanceof collectionConstructor:
+            case propValue instanceof immutableCollectionConstructor:
                 return null;
 
             case Array.isArray(propValue):
@@ -150,17 +150,17 @@ function createCollectionTypeChecher(collectionConstructor) {
                     propFullName:  propFullName
                 };
 
-                collectionConstructor.serialize(
+                immutableCollectionConstructor.serialize(
                     propValue,
                     (error) => validationErrorOrNull = error,
-                    (dictionary) => props[propName] = dictionary
+                    (immutableDictionary) => props[propName] = immutableDictionary
                 );
 
                 return validationErrorOrNull;
 
             default:
                 let locationName = ReactPropTypeLocationNames[location];
-                let expectedClassName = collectionConstructor.name || ANONYMOUS;
+                let expectedClassName = immutableCollectionConstructor.name || ANONYMOUS;
                 return new Error(`Invalid ${locationName} \`${propFullName}\` of type \`${getClassName(propValue)}\` supplied to \`${componentName}\`, expected instance of \`${expectedClassName}\` or an \`array\`.`);
         }
 

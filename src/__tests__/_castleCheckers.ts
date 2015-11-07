@@ -1,9 +1,9 @@
 /// <reference path="../../typings/Castle.d.ts" />
 
-function getSerializationResult(Constructor: typeof Castle.CBase, data: any): {
+function getSerializationResult(Constructor: typeof Castle.ImmutableBase, data: any): {
     error:         Error,
-    instance:      Castle.CBase,
-    returnedValue: Castle.CBase
+    instance:      Castle.ImmutableBase,
+    returnedValue: Castle.ImmutableBase
 } {
 
     let result = {
@@ -14,13 +14,13 @@ function getSerializationResult(Constructor: typeof Castle.CBase, data: any): {
     result.returnedValue = Constructor.serialize(
         data,
         (error: Error)     => result.error = error,
-        (instance: Castle.CBase) => result.instance = instance
+        (instance: Castle.ImmutableBase) => result.instance = instance
     );
     return result;
 }
 
 export default {
-    checkInitializationSuccess: (Constructor: typeof Castle.CBase, data: any, okCallback: ((instance: Castle.CBase) => void)) => {
+    checkInitializationSuccess: (Constructor: typeof Castle.ImmutableBase, data: any, okCallback: ((instance: Castle.ImmutableBase) => void)) => {
 
         let result = getSerializationResult(Constructor, data);
         expect(result.error).toBeNull();
@@ -37,7 +37,7 @@ export default {
 
     },
 
-    checkInitializationFail: (Constructor: typeof Castle.CBase, data: any, errorText: string, safeInitializationErrorText: string) => {
+    checkInitializationFail: (Constructor: typeof Castle.ImmutableBase, data: any, errorText: string, safeInitializationErrorText: string) => {
 
         safeInitializationErrorText = safeInitializationErrorText || errorText;
 

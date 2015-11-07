@@ -1,8 +1,8 @@
 "use strict";
 
 const PropTypes = require("../PropTypes");
-const Dictionary = require("../Dictionary");
-const Collection = require("../Collection");
+const ImmutableDictionary = require("../ImmutableDictionary");
+const ImmutableCollection = require("../ImmutableCollection");
 
 const requiredMessage = "Required prop `testProp` was not specified in `testComponent`.";
 
@@ -249,12 +249,12 @@ describe("PropTypes", function() {
         });
     });
 
-    describe("Dictionary Types", function() {
+    describe("ImmutableDictionary Types", function() {
 
         it("should warn for invalid instances", function() {
-            class Person extends Dictionary {}
-            class Cat extends Dictionary {}
-            class Car extends Dictionary {
+            class Person extends ImmutableDictionary {}
+            class Cat extends ImmutableDictionary {}
+            class Car extends ImmutableDictionary {
                 static schema = {
                     weight: PropTypes.number.optional,
                     wheels: PropTypes.number
@@ -263,95 +263,95 @@ describe("PropTypes", function() {
             var personName = Person.name || "<<anonymous>>";
 
             typeCheckFail(
-                PropTypes.dictionary(Person),
+                Person.getTypeChecker(),
                 false,
                 "Invalid prop `testProp` of type `Boolean` supplied to " +
                 "`testComponent`, expected instance of `" + personName + "` or an `object`."
             );
             typeCheckFail(
-                PropTypes.dictionary(Person),
+                Person.getTypeChecker(),
                 "",
                 "Invalid prop `testProp` of type `String` supplied to " +
                 "`testComponent`, expected instance of `" + personName + "` or an `object`."
             );
             typeCheckFail(
-                PropTypes.dictionary(Person),
+                Person.getTypeChecker(),
                 new Cat({}),
                 "Invalid prop `testProp` of type `Cat` supplied to " +
                 "`testComponent`, expected instance of `" + personName + "` or an `object`."
             );
             typeCheckFail(
-                PropTypes.dictionary(Person),
+                Person.getTypeChecker(),
                 Object.create(null),
                 "Invalid prop `testProp` of type `<<anonymous>>` supplied to " +
                 "`testComponent`, expected instance of `" + personName + "` or an `object`."
             );
             typeCheckFail(
-                PropTypes.dictionary(Car),
+                Car.getTypeChecker(),
                 {},
                 "Required prop `wheels` was not specified in `Car`."
             );
         });
 
         it("should not warn for valid values", function() {
-            class Person extends Dictionary {}
+            class Person extends ImmutableDictionary {}
             class Engineer extends Person {}
 
-            typeCheckPass(PropTypes.dictionary(Person), new Person({}));
-            typeCheckPass(PropTypes.dictionary(Person), new Engineer({}));
-            typeCheckPass(PropTypes.dictionary(Person), {});
+            typeCheckPass(Person.getTypeChecker(), new Person({}));
+            typeCheckPass(Person.getTypeChecker(), new Engineer({}));
+            typeCheckPass(Person.getTypeChecker(), {});
         });
 
         it("should not warn for optional values", function() {
-            class Person extends Dictionary {}
-            typeCheckPass(PropTypes.dictionary(Person).optional, null);
-            typeCheckPass(PropTypes.dictionary(Person).optional, undefined);
+            class Person extends ImmutableDictionary {}
+            typeCheckPass(Person.getTypeChecker().optional, null);
+            typeCheckPass(Person.getTypeChecker().optional, undefined);
         });
 
         it("should warn for missing required values", function() {
-            class Person extends Dictionary {}
+            class Person extends ImmutableDictionary {}
             typeCheckFail(
-                PropTypes.dictionary(Person).isRequired, null, requiredMessage
+                Person.getTypeChecker().isRequired, null, requiredMessage
             );
             typeCheckFail(
-                PropTypes.dictionary(Person).isRequired, undefined, requiredMessage
+                Person.getTypeChecker().isRequired, undefined, requiredMessage
             );
         });
 
     });
 
 
-    describe("Collection Types", function() {
+    describe("ImmutableCollection Types", function() {
 
         it("should warn for invalid instances", function() {
-            class Person extends Dictionary {}
-            class People extends Collection {
+            class Person extends ImmutableDictionary {}
+            class People extends ImmutableCollection {
                 static type = Person
             }
-            class Deers extends Collection {}
+            class Deers extends ImmutableCollection {}
             var peopleName = People.name || "<<anonymous>>";
             var personName = Person.name || "<<anonymous>>";
 
             typeCheckFail(
-                PropTypes.collection(People),
+                People.getTypeChecker(),
                 false,
                 "Invalid prop `testProp` of type `Boolean` supplied to " +
                 "`testComponent`, expected instance of `" + peopleName + "` or an `array`."
             );
             typeCheckFail(
-                PropTypes.collection(People),
+                People.getTypeChecker(),
                 "",
                 "Invalid prop `testProp` of type `String` supplied to " +
                 "`testComponent`, expected instance of `" + peopleName + "` or an `array`."
             );
             typeCheckFail(
-                PropTypes.collection(People),
+                People.getTypeChecker(),
                 new Deers([]),
                 "Invalid prop `testProp` of type `Deers` supplied to " +
                 "`testComponent`, expected instance of `" + peopleName + "` or an `array`."
             );
             typeCheckFail(
-                PropTypes.collection(People),
+                People.getTypeChecker(),
                 Object.create(null),
                 "Invalid prop `testProp` of type `<<anonymous>>` supplied to " +
                 "`testComponent`, expected instance of `" + peopleName + "` or an `array`."
@@ -360,7 +360,7 @@ describe("PropTypes", function() {
             var person = new Person({});
             var arr = [person, 2];
             typeCheckFail(
-                PropTypes.collection(People),
+                People.getTypeChecker(),
                 arr,
                 "Invalid prop `testProp[1]` of type `Number` supplied to " +
                 "`testComponent`, expected instance of `" + personName + "` or an `object`."
@@ -368,27 +368,27 @@ describe("PropTypes", function() {
         });
 
         it("should not warn for valid values", function() {
-            class People extends Collection { }
+            class People extends ImmutableCollection { }
             class Engineers extends People { }
 
-            typeCheckPass(PropTypes.collection(People), new People([]));
-            typeCheckPass(PropTypes.collection(People), new Engineers([]));
-            typeCheckPass(PropTypes.collection(People), []);
+            typeCheckPass(People.getTypeChecker(), new People([]));
+            typeCheckPass(People.getTypeChecker(), new Engineers([]));
+            typeCheckPass(People.getTypeChecker(), []);
         });
 
         it("should not warn for optional values", function() {
-            class People extends Dictionary {}
-            typeCheckPass(PropTypes.collection(People).optional, null);
-            typeCheckPass(PropTypes.collection(People).optional, undefined);
+            class People extends ImmutableCollection {}
+            typeCheckPass(People.getTypeChecker().optional, null);
+            typeCheckPass(People.getTypeChecker().optional, undefined);
         });
 
         it("should warn for missing required values", function() {
-            class People extends Dictionary {}
+            class People extends ImmutableCollection {}
             typeCheckFail(
-                PropTypes.collection(People).isRequired, null, requiredMessage
+                People.getTypeChecker().isRequired, null, requiredMessage
             );
             typeCheckFail(
-                PropTypes.collection(People).isRequired, undefined, requiredMessage
+                People.getTypeChecker().isRequired, undefined, requiredMessage
             );
         });
 

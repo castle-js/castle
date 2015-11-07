@@ -2,19 +2,19 @@
 
 import checkers from "./_castleCheckers";
 
-import { Dictionary, Collection, PropTypes } from "castle";
+import { ImmutableDictionary, ImmutableCollection, PropTypes } from "castle";
 
 describe("Collections", () => {
 
     describe("initialization", () => {
 
-        class Car extends Dictionary {
+        class Car extends ImmutableDictionary {
             static schema = {
                 wheels: PropTypes.number
             }
         }
 
-        class Cars extends Collection {
+        class Cars extends ImmutableCollection {
             static type = Car;
         }
 
@@ -39,12 +39,12 @@ describe("Collections", () => {
             );
         });
 
-        it("should throw on no argument", () => {
+        it("should throw error on no argument", () => {
             expect(() => new Cars(null)).toThrowError(
-                "No data provided in Collection constructor"
+                "No data provided for “Cars” Collection"
             );
             expect(() => Cars.serialize(null)).toThrowError(
-                "No data provided in Collection constructor"
+                "No data provided for “Cars” Collection"
             );
         });
 

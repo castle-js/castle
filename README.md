@@ -33,13 +33,20 @@ var Castle = require("castle");
 // ES6 modules
 import Castle from "castle";
 // or
-import { PropTypes, Dictionary, Collection, Immutable } from "castle";
+import { PropTypes, Dictionary, Collection } from "castle";
+// or
+import { PropTypes, ImmutableDictionary, ImmutableCollection } from "castle";
 ```
 
 otherwise just attach castle.js:
 
 ```html
-<script src="<path>/castle.js"></script>
+<head>
+    <!-- #if you wish to use ImmutableDictionary/ImmutableCollection -->
+    <script src="<path>/immutable.js"></script>
+    <!-- #endif -->
+    <script src="<path>/castle.js"></script>
+</head>
 ```
 
 
