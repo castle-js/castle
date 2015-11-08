@@ -38,12 +38,16 @@ module.exports = {
             }
         ]
     },
-    devtool: isProduction ? null : "source-map",
+    devtool: isProduction
+        ? null
+        : "source-map",
     debug: false,
     resolveLoader: {
         root:  path.join(__dirname, "node_modules")
     },
-    //externals: [ "immutable" ],
+    externals: isProduction
+        ? [ "immutable" ]
+        : [],
     resolve: {
         root: root,
         modulesDirectories: ["node_modules", "."],
@@ -66,11 +70,17 @@ module.exports = {
 
 };
 
+if (process.argv.join().indexOf("--no-errors") >= 0) {
+    module.exports.plugins = module.exports.plugins.concat([
+        new webpack.NoErrorsPlugin()
+    ]);
+}
+
 if (isProduction) {
     module.exports.plugins = module.exports.plugins.concat([
         new webpack.optimize.UglifyJsPlugin({
             mangle: {
-                except: ["CBase"]
+                except: [ "ImmutableBase", "Collection", "Collection" ]
             }
         }),
         new webpack.optimize.OccurenceOrderPlugin()

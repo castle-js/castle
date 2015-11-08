@@ -2,11 +2,12 @@
   "name": "castle",
   "version": "0.0.1",
   "description": "Immutable dictionaries ands collections, guaranteed to be valid and sanitized",
+  "repository": "https://github.com/castle-js/castle.git",
   "main": "dist/castle.js",
   "scripts": {
     "dist": "isProduction=true webpack --config webpack.config.js --progress --profile --colors && JASMINE_CONFIG_PATH=build-tests/jasmine.json jasmine",
     "start": "webpack-dev-server --hot --inline",
-    "test": "karma start",
+    "test": "karma start --no-errors",
     "test-all": "browsers=Chrome,Firefox,'IE8 - WinXP' karma start"
   },
   "keywords": [
@@ -25,9 +26,10 @@
     "awesome-typescript-loader": "^0.14.0",
     "babel-core": "^5.8.22",
     "babel-loader": "^5.3.2",
+    "immutable": "^3.7.5",
     "jasmine": "^2.3.2",
     "jasmine-core": "^2.3.4",
-    "karma": "0.13.11",
+    "karma": "0.13.15",
     "karma-chrome-launcher": "^0.2.0",
     "karma-firefox-launcher": "^0.1.6",
     "karma-ievms": "^0.1.0",
@@ -35,11 +37,11 @@
     "karma-phantomjs2-launcher": "^0.3.2",
     "karma-sourcemap-loader": "^0.3.5",
     "karma-webpack": "^1.7.0",
-    "ts-loader": "^0.5.4",
+    "object-assign": "^4.0.1",
+    "ts-loader": "^0.6.1",
     "tsd": "^0.6.4",
     "typescript": "^1.6.0-beta",
     "webpack": "^1.12.1",
-    "webpack-dev-server": "^1.10.1",
-    "immutable": "^3.7.5"
+    "webpack-dev-server": "^1.10.1"
   }
 }

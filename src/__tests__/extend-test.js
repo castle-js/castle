@@ -1,16 +1,17 @@
 "use strict";
 
-const CBase = require("../CBase");
-const Dictionary = require("../Dictionary");
+const ImmutableDictionary = require("../ImmutableDictionary");
 
 describe("extend", () => {
 
-    var Person = Dictionary.extend(
+    var Person = ImmutableDictionary.extend(
         function PersonClass() {
             this.personProp = true;
         },
         {
-            personStaticProp: true
+            personStaticProp: true,
+            // XXX
+            schema: {}
         },
         {
             personProp2: true
@@ -52,8 +53,7 @@ describe("extend", () => {
         expect(
             child instanceof Child
             && child instanceof Person
-            && child instanceof Dictionary
-            && child instanceof CBase
+            && child instanceof ImmutableDictionary
         ).toBeTruthy()
     });
 

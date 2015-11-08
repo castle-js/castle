@@ -2,17 +2,17 @@
 
 const PropTypes = {
 
-    array:        createPrimitiveTypeChecker("array"),
-    bool:         createPrimitiveTypeChecker("boolean"),
-    func:         createPrimitiveTypeChecker("function"),
-    number:       createPrimitiveTypeChecker("number"),
-    object:       createPrimitiveTypeChecker("object"),
-    string:       createPrimitiveTypeChecker("string"),
+    array:  createPrimitiveTypeChecker("array"),
+    bool:   createPrimitiveTypeChecker("boolean"),
+    func:   createPrimitiveTypeChecker("function"),
+    number: createPrimitiveTypeChecker("number"),
+    object: createPrimitiveTypeChecker("object"),
+    string: createPrimitiveTypeChecker("string"),
 
-    arrayOf:      createArrayOfTypeChecker,
-    instanceOf:   createInstanceTypeChecker,
-    dictionary:   createDictionaryTypeChecker,
-    collection:   createCollectionTypeChecher
+    arrayOf:    createArrayOfTypeChecker,
+    instanceOf: createInstanceTypeChecker,
+    dictionary: createDictionaryTypeChecker,
+    collection: createCollectionTypeChecher
 
 };
 
@@ -153,7 +153,7 @@ function createCollectionTypeChecher(collectionConstructor) {
                 collectionConstructor.serialize(
                     propValue,
                     (error) => validationErrorOrNull = error,
-                    (dictionary) => props[propName] = dictionary
+                    (collection) => props[propName] = collection
                 );
 
                 return validationErrorOrNull;

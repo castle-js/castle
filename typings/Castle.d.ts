@@ -1,23 +1,23 @@
 
 declare namespace Castle {
 
-    class CBase  {
+    class ImmutableBase  {
 
         constructor(data: {});
 
-        static serialize(data: any, errorCb?: ((error: Error) => void), successCb?: (instance: CBase) => void): CBase;
+        static serialize(data: any, errorCb?: ((error: Error) => void), successCb?: (instance: ImmutableBase) => void): ImmutableBase;
 
         get: (a: String, b?: any) => any;
 
     }
 
-    class Dictionary extends CBase {
+    class ImmutableDictionary extends ImmutableBase {
 
         static setSchema: (schema: any) => any;
 
     }
 
-    class Collection extends CBase {
+    class ImmutableCollection extends ImmutableBase {
 
         constructor(data: any[]);
 
@@ -35,17 +35,17 @@ declare namespace Castle {
     }
 
     var PropTypes: {
-        array:        CanBeOptional<any>,
-        bool:         CanBeOptional<any>,
-        func:         CanBeOptional<any>,
-        number:       CanBeOptional<any>,
-        object:       CanBeOptional<any>,
-        string:       CanBeOptional<any>,
+        array:  CanBeOptional<any>,
+        bool:   CanBeOptional<any>,
+        func:   CanBeOptional<any>,
+        number: CanBeOptional<any>,
+        object: CanBeOptional<any>,
+        string: CanBeOptional<any>,
 
-        arrayOf:      (type: Validator<any>) => CanBeOptional<any>,
-        instanceOf:   (expectedClass: {}) => CanBeOptional<any>,
-        model:        (expectedDictionary: typeof Dictionary) => CanBeOptional<any>,
-        collection:   (expectedCollection: typeof Collection) => CanBeOptional<any>,
+        arrayOf:             (type: Validator<any>) => CanBeOptional<any>,
+        instanceOf:          (expectedClass: {}) => CanBeOptional<any>,
+        //dictionary: (expectedDictionary: typeof Dictionary) => CanBeOptional<any>,
+        //dollection: (expectedCollection: typeof Collection) => CanBeOptional<any>,
     };
 
 }

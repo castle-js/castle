@@ -3,11 +3,11 @@
 import checkers from "./_castleCheckers";
 import * as Castle from "castle";
 
-describe("Dictionary", function() {
+describe("ImmutableDictionary", function() {
 
     describe("initialization", () => {
 
-        class Person extends Castle.Dictionary {
+        class Person extends Castle.ImmutableDictionary {
             static schema = {
                 name: Castle.PropTypes.string
             }
@@ -39,10 +39,10 @@ describe("Dictionary", function() {
 
         it("should throw on no argument", () => {
             expect(() => new Person(null)).toThrowError(
-                "No data provided in Dictionary constructor"
+                "No data provided for “Person” Dictionary"
             );
             expect(() => Person.serialize(null)).toThrowError(
-                "No data provided in Dictionary constructor"
+                "No data provided for “Person” Dictionary"
             );
         });
 
@@ -50,7 +50,7 @@ describe("Dictionary", function() {
 
     describe("setShema method", () => {
 
-        class Duck extends Castle.Dictionary {}
+        class Duck extends Castle.ImmutableDictionary {}
 
         let returnValue = Duck.setSchema({
             eyes: Castle.PropTypes.number
@@ -64,24 +64,24 @@ describe("Dictionary", function() {
             expect((new Duck({ eyes: 2 })).get("eyes")).toEqual(2);
         });
 
-        it("should throw on attempting when called twice", () => {
+        it("should throw when called twice", () => {
             expect(() => Duck.setSchema({})).toThrowError(
-                "Attempted to call `setSchema` twice on `Duck`"
+                "Attempted to call “setSchema” on class “Duck” twice"
             );
         });
 
-        it("should throw on attempting when called on class with `shema` static prop", () => {
-            class DuckWithStatic extends Castle.Dictionary {
+        it("should throw when called on class with “shema” static prop", () => {
+            class DuckWithStatic extends Castle.ImmutableDictionary {
                 static schema = {}
             }
             expect(() => DuckWithStatic.setSchema({})).toThrowError(
-                "Attempted to call `setSchema` on class `DuckWithStatic` that aleady has `shema` static property"
+                "Attempted to call “setSchema” on class “DuckWithStatic” that aleady has “schema” static property"
             );
         });
 
-        it("should throw error when calling on Dictionary itself", () => {
-            expect(() => Castle.Dictionary.setSchema({})).toThrowError(
-                "Attempted to call `setSchema` on `Dictionary` itself"
+        it("should throw error when calling on ImmutableDictionary itself", () => {
+            expect(() => Castle.ImmutableDictionary.setSchema({})).toThrowError(
+                "Attempted to call “setSchema” on class “ImmutableDictionary” itself"
             );
         });
 

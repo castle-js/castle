@@ -1,97 +1,63 @@
-"use strict";
 
-const Immutable = require("immutable");
+const objectAssign = require("object-assign");
 
-const PropTypes = require("./PropTypes");
-
-const CBase = require('./CBase');
 const Dictionary = require("./Dictionary");
 
+const Errors = require("./lib/Errors");
+const symbols = require("./lib/symbols");
 const createStaticSetter = require("./lib/createStaticSetter");
+const parseCollection = require("./lib/parseCollection");
 
-const symbols = {
-    serializing:        require('./symbols').serializing,
-    underlyingIterable: require('./symbols').underlyingIterable,
-    serializationError: require('./symbols').serializationError,
-    skipInit:           global.Symbol ? Symbol("skipInit") : "@@skipInit_sZVH9hN8JUZRJH",
-    type:               global.Symbol ? Symbol("type")     : "@@type_RaW6LsdMQE9DcE"
-};
+function Collection(objects) {
 
+    if (this.constructor.hasOwnProperty("type")) {
+        let type = this.constructor.type;
+        delete this.constructor.type;
+        this.constructor.setType(type);
+    }
 
-const Collection = module.exports = CBase.extend("Collection", function (objects) {
+    let dictionaryConstructor = this.constructor[symbols.dictionaryType];
 
-        if (this.constructor[symbols.skipInit]) {
-            return;
-        }
+    this.constructor[symbols.assertDictionaryTypeValid](dictionaryConstructor);
 
-        if (this.constructor.hasOwnProperty("type")) {
-            let type = this.constructor.type;
-            delete this.constructor.type;
-            this.constructor.setType(type);
-        }
-
-        // XXX
-        let dictionaryConstructor = this.constructor[symbols.type] || {};
-
-        let metError  = null;
-
-        if (objects == null || Array.isArray(objects) === false) {
-            throw new Error("No data provided in Collection constructor");
-        }
-        if (typeof dictionaryConstructor !== "function" || dictionaryConstructor.prototype instanceof Dictionary === false && dictionaryConstructor !== Dictionary) {
-            throw new Error("`type` static propry must be a Dictionary constructor");
-        }
-
-        for (let i = 0; i < objects.length; i++) {
-
-            switch(true) {
-                case objects[i] instanceof dictionaryConstructor:
-                    break;
-                default:
-                    if (objects.__environment != null) {
-                        let e = objects.__environment;
-                        metError = PropTypes.dictionary(dictionaryConstructor)(objects, i, e.componentName, e.location, `${e.propFullName}[${i}]`);
-                    } else {
-                        metError = PropTypes.dictionary(dictionaryConstructor)(objects, i, this.constructor.name);
-                    }
-                    break;
-            }
-
-            if (metError != null) {
-                break;
-            }
-
-        }
-
-        if(metError) {
-            if (this.constructor[symbols.serializing] === true) {
-                this[symbols.serializationError] = metError;
-            } else {
-                throw metError;
-            }
+    let parseResult = parseCollection(dictionaryConstructor, objects, this.constructor.name);
+    if(parseResult instanceof Error) {
+        if (this.constructor[symbols.serializing] === true) {
+            this[symbols.serializationError] = parseResult;
         } else {
-            this[symbols.underlyingIterable] = Immutable.List(objects);
+            throw parseResult;
         }
-
-    }
-);
-
-Collection[symbols.type] = Dictionary;
-
-Collection.setType = createStaticSetter("setType", "type", symbols.type, Collection);
-
-Collection.prototype.set = function(index, value, errorCallback) {
-
-    let error = PropTypes.dictionary(this.constructor.type)(arguments, 1, this.constructor.type.name);
-    if (error) {
-        typeof errorCallback === "function" && errorCallback(error);
-        return this;
+    } else {
+        this[symbols.saveValidatedData](parseResult)
     }
 
-    this.constructor[symbols.skipInit] = true;
-    let newInstance = new this.constructor();
-    this.constructor[symbols.skipInit] = false;
-    newInstance[symbols.underlyingIterable] = this[symbols.underlyingIterable].set(index, arguments[1]);
-    return newInstance;
+}
 
+Collection.prototype = Object.create(Array.prototype, {
+    constructor: {
+        value: Collection,
+        enumerable: false,
+        writable: true,
+        configurable: true
+    }
+});
+Collection.extend = require("./lib/extend");
+Collection.serialize = require("./lib/serialize");
+
+Collection[symbols.assertDictionaryTypeValid] = dictionaryConstructor => {
+    if (typeof dictionaryConstructor !== "function"
+        || dictionaryConstructor.prototype instanceof Dictionary === false
+        && dictionaryConstructor !== Dictionary)
+    {
+        throw Errors.iCollectionNoTypeDefined(this.constructor.name);
+    }
 };
+
+Collection.setType = createStaticSetter("setType", "type", symbols.dictionaryType, Collection);
+
+Collection.prototype[symbols.saveValidatedData] = function(data) {
+    objectAssign(this, data);
+    this.length = data.length;
+};
+
+module.exports = Collection;
