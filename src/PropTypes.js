@@ -9,10 +9,10 @@ const PropTypes = {
     object: createPrimitiveTypeChecker("object"),
     string: createPrimitiveTypeChecker("string"),
 
-    arrayOf:             createArrayOfTypeChecker,
-    instanceOf:          createInstanceTypeChecker,
-    immutableDictionary: createImmutableDictionaryTypeChecker,
-    immutableCollection: createImmutableCollectionTypeChecher
+    arrayOf:    createArrayOfTypeChecker,
+    instanceOf: createInstanceTypeChecker,
+    dictionary: createDictionaryTypeChecker,
+    collection: createCollectionTypeChecher
 
 };
 
@@ -104,25 +104,25 @@ function createInstanceTypeChecker(expectedClass) {
     return createChainableTypeChecker(validate);
 }
 
-function createImmutableDictionaryTypeChecker(immutableDictionaryConstructor) {
+function createDictionaryTypeChecker(dictionaryConstructor) {
     function validate(props, propName, componentName, location, propFullName) {
 
         let propValue = props[propName];
 
         switch (true) {
-            case (propValue instanceof immutableDictionaryConstructor):
+            case (propValue instanceof dictionaryConstructor):
                 return null;
             case (getClassName(propValue) == "Object"):
                 let validationErrorOrNull = null;
-                immutableDictionaryConstructor.serialize(
+                dictionaryConstructor.serialize(
                     propValue,
                     (error) => validationErrorOrNull = error,
-                    (immutableDictionary) => props[propName] = immutableDictionary
+                    (dictionary) => props[propName] = dictionary
                 );
                 return validationErrorOrNull;
             default:
                 let locationName = ReactPropTypeLocationNames[location];
-                let expectedClassName = immutableDictionaryConstructor.name || ANONYMOUS;
+                let expectedClassName = dictionaryConstructor.name || ANONYMOUS;
                 return new Error(`Invalid ${locationName} \`${propFullName}\` of type \`${getClassName(propValue)}\` supplied to \`${componentName}\`, expected instance of \`${expectedClassName}\` or an \`object\`.`);
         }
     }
@@ -131,14 +131,14 @@ function createImmutableDictionaryTypeChecker(immutableDictionaryConstructor) {
 }
 
 
-function createImmutableCollectionTypeChecher(immutableCollectionConstructor) {
+function createCollectionTypeChecher(collectionConstructor) {
     function validate(props, propName, componentName, location, propFullName) {
 
         let propValue = props[propName];
 
         switch(true) {
 
-            case propValue instanceof immutableCollectionConstructor:
+            case propValue instanceof collectionConstructor:
                 return null;
 
             case Array.isArray(propValue):
@@ -150,17 +150,17 @@ function createImmutableCollectionTypeChecher(immutableCollectionConstructor) {
                     propFullName:  propFullName
                 };
 
-                immutableCollectionConstructor.serialize(
+                collectionConstructor.serialize(
                     propValue,
                     (error) => validationErrorOrNull = error,
-                    (immutableDictionary) => props[propName] = immutableDictionary
+                    (collection) => props[propName] = collection
                 );
 
                 return validationErrorOrNull;
 
             default:
                 let locationName = ReactPropTypeLocationNames[location];
-                let expectedClassName = immutableCollectionConstructor.name || ANONYMOUS;
+                let expectedClassName = collectionConstructor.name || ANONYMOUS;
                 return new Error(`Invalid ${locationName} \`${propFullName}\` of type \`${getClassName(propValue)}\` supplied to \`${componentName}\`, expected instance of \`${expectedClassName}\` or an \`array\`.`);
         }
 

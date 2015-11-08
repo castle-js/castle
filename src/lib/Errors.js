@@ -1,6 +1,6 @@
 
 module.exports = {
-    immutableJsUnavailable: () => new Error(
+    immutableJsUnavailable: () => Error(
         "Immutable.js is not available. Make it requirable as `immutable` if using AMD/CommonJS/SystemJS, " +
         "otherwise add it to the global object as `Immutable`. https://facebook.github.io/immutable-js/"
     ),
@@ -40,8 +40,8 @@ module.exports = {
     extensionDifferentTypeOfKeyInChildStaticObject:
         (objectName, key, parentKeyType, childKeyType, parentName, childName) => new Error(
             `Incorrect extension: tried to override property “${key}” of type type with property ` +
-            `of type “${parentKeyType}” with property of type “${childKeyType}” type in static object “${objectName}” ` +
-            `of class “${childName}”, that extends class “${parentName}”`
+            `of type “${parentKeyType}” with property of type “${childKeyType}” type in static object ` +
+            `“${objectName}” of class “${childName}”, that extends class “${parentName}”`
         ),
     extensionOwerridenKeyWithNotInstance:
         (objectName, key, parentObjectConstructorName, parentName, childName) => new Error(

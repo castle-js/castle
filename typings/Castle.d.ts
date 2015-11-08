@@ -44,8 +44,8 @@ declare namespace Castle {
 
         arrayOf:             (type: Validator<any>) => CanBeOptional<any>,
         instanceOf:          (expectedClass: {}) => CanBeOptional<any>,
-        immutableDictionary: (expectedDictionary: typeof ImmutableDictionary) => CanBeOptional<any>,
-        immutableCollection: (expectedCollection: typeof ImmutableCollection) => CanBeOptional<any>,
+        //dictionary: (expectedDictionary: typeof Dictionary) => CanBeOptional<any>,
+        //dollection: (expectedCollection: typeof Collection) => CanBeOptional<any>,
     };
 
 }

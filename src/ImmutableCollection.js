@@ -6,19 +6,17 @@ const PropTypes = require("./PropTypes");
 const ImmutableBase = require('./ImmutableBase');
 const ImmutableDictionary = require("./ImmutableDictionary");
 
-const createStaticSetter = require("./lib/createStaticSetter");
-const parseCollection = require("./lib/parseCollection");
 const Errors = require("./lib/Errors");
 const symbols = require('./lib/symbols');
+const createStaticSetter = require("./lib/createStaticSetter");
+const parseCollection = require("./lib/parseCollection");
 
 const ImmutableCollection = module.exports = ImmutableBase.extend("ImmutableCollection", function (objects) {
 
     Immutable = Immutable || require('immutable') || global.Immutable;
     if (Immutable == null) { throw Errors.immutableJsUnavailable(); }
 
-    if (this.constructor[symbols.skipInit]) {
-        return;
-    }
+    if (this.constructor[symbols.skipInit]) { return; }
 
     if (this.constructor.hasOwnProperty("type")) {
         let type = this.constructor.type;
@@ -45,13 +43,13 @@ const ImmutableCollection = module.exports = ImmutableBase.extend("ImmutableColl
 
 });
 
-ImmutableCollection[symbols.dictionaryType] = ImmutableDictionary;
+
+ImmutableCollection.getTypeChecker = function() { return PropTypes.collection(this); };
 
 ImmutableCollection.setType = createStaticSetter("setType", "type", symbols.dictionaryType, ImmutableCollection);
 
-ImmutableCollection.getTypeChecker = function() {
-    return PropTypes.immutableCollection(this);
-};
+ImmutableCollection[symbols.dictionaryType] = ImmutableDictionary;
+
 
 ImmutableCollection.prototype.set = function(index, value, errorCallback) {
 

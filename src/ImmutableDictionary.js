@@ -6,18 +6,16 @@ const PropTypes = require("./PropTypes");
 const ImmutableBase = require('./ImmutableBase');
 
 const Errors = require("./lib/Errors");
+const symbols = require('./lib/symbols');
 const createStaticSetter = require("./lib/createStaticSetter");
 const parseDictionary = require("./lib/parseDictionary");
-const symbols = require('./lib/symbols');
 
 const ImmutableDictionary = module.exports = ImmutableBase.extend("ImmutableDictionary", function(data) {
 
     Immutable = Immutable || require('immutable') || global.Immutable;
     if (Immutable == null) { throw Errors.immutableJsUnavailable(); }
 
-    if (this.constructor[symbols.skipInit]) {
-        return
-    }
+    if (this.constructor[symbols.skipInit]) { return }
 
     if (this.constructor.hasOwnProperty("schema")) {
         let schema = this.constructor.schema;
@@ -50,11 +48,15 @@ const ImmutableDictionary = module.exports = ImmutableBase.extend("ImmutableDict
 
 });
 
+
+ImmutableDictionary.getTypeChecker = function() { return PropTypes.dictionary(this); };
+
 ImmutableDictionary.setSchema = createStaticSetter("setSchema", "schema", symbols.schema, ImmutableDictionary);
 ImmutableDictionary.setDefaults = createStaticSetter("setDefaults", "defaults", symbols.defaults, ImmutableDictionary);
 
 ImmutableDictionary[symbols.schema] = {};
 ImmutableDictionary[symbols.defaults] = {};
+
 
 ImmutableDictionary.prototype.set = function(key, value, errorCallback) {
     let prop = this.constructor.schema[key];
@@ -74,8 +76,4 @@ ImmutableDictionary.prototype.set = function(key, value, errorCallback) {
     this.constructor[symbols.skipInit] = false;
     newInstance[symbols.underlyingIterable] = this[symbols.underlyingIterable].set(key, value);
     return newInstance;
-};
-
-ImmutableDictionary.getTypeChecker = function() {
-    return PropTypes.immutableDictionary(this);
 };
