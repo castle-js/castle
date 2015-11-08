@@ -1,11 +1,11 @@
 {
   "name": "castle",
   "version": "0.0.1",
-  "description": "Immutable dictionaries ands collections, guaranteed to be valid and sanitized",
+  "description": "Dictionaries ands collections, guaranteed to be valid and sanitized",
   "repository": "https://github.com/castle-js/castle.git",
   "main": "dist/castle.js",
   "scripts": {
-    "dist": "isProduction=true webpack --config webpack.config.js --progress --profile --colors && JASMINE_CONFIG_PATH=build-tests/jasmine.json jasmine",
+    "dist": "isProduction=true webpack --config webpack.config.js --progress --profile --colors && JASMINE_CONFIG_PATH=build-tests/jasmine.json jasmine && ncp typings/Castle.d.ts dist/Castle.d.ts",
     "start": "webpack-dev-server --hot --inline",
     "test": "karma start --no-errors",
     "test-all": "browsers=Chrome,Firefox,'IE8 - WinXP' karma start"
@@ -37,6 +37,7 @@
     "karma-phantomjs2-launcher": "^0.3.2",
     "karma-sourcemap-loader": "^0.3.5",
     "karma-webpack": "^1.7.0",
+    "ncp": "^2.0.0",
     "object-assign": "^4.0.1",
     "ts-loader": "^0.6.1",
     "tsd": "^0.6.4",

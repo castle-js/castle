@@ -80,7 +80,7 @@ if (isProduction) {
     module.exports.plugins = module.exports.plugins.concat([
         new webpack.optimize.UglifyJsPlugin({
             mangle: {
-                except: [ "ImmutableBase", "Collection", "Collection" ]
+                except: [ "Collection", "ImmutableCollection", "Dictionary", "ImmutableDictionary" ]
             }
         }),
         new webpack.optimize.OccurenceOrderPlugin()

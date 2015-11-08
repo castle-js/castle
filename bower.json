@@ -1,6 +1,6 @@
 {
   "name": "castle",
-  "description": "Immutable dictionaries ands collections, guaranteed to be valid and sanitized",
+  "description": "Dictionaries and collections, guaranteed to be valid and sanitized",
   "main": "dist/castle.js",
   "authors": [
     "Andrey Kogut"

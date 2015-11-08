@@ -7,7 +7,7 @@ module.exports = function parseCollection(dictionaryConstructor, objects, collec
         throw Errors.collectionNoData(collectionName);
     }
 
-    let metError  = null;
+    let metError = null;
 
     for (let i = 0; i < objects.length; i++) {
 
@@ -21,7 +21,6 @@ module.exports = function parseCollection(dictionaryConstructor, objects, collec
                 } else {
                     metError = dictionaryConstructor.getTypeChecker()(objects, i, collectionName);
                 }
-                break;
         }
 
         if (metError != null) {
