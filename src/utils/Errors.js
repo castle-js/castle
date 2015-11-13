@@ -1,17 +1,19 @@
 
 module.exports = {
-    immutableJsUnavailable: () => Error(
-        "Immutable.js is not available. Make it requirable as `immutable` if using AMD/CommonJS/SystemJS, " +
-        "otherwise add it to the global object as `Immutable`. https://facebook.github.io/immutable-js/"
+    attemptToMutateProp: (ownerName, prop) => Error(
+        `Attempt to mutate property “${prop}” of immutable “${ownerName}”`
     ),
     collectionNoData: collectionName => new Error(
         `No data provided for “${collectionName}” Collection`
+    ),
+    collectionSetBadIndex: (collectionName, index, length) => new Error(
+        `Can't set ${collectionName}[${index}] lower than (${length}), otherwise undefined elements would occur`
     ),
     dictionaryNoData: dictionaryName => new Error(
         `No data provided for “${dictionaryName}” Dictionary`
     ),
     iCollectionNoTypeDefined: collectionName => new Error(
-        `“${collectionName}” class “type” static property must be instance of ImmutableDictionary constructor`
+        `“${collectionName}” class “type” static property must be instance of Dictionary constructor`
     ),
     iDictiomaryNoSchemaDefined: dictionaryName => new Error(
         `“${dictionaryName}” class “schema” static property must be an object`

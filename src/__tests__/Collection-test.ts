@@ -1,20 +1,21 @@
+/// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="../../typings/Castle.d.ts" />
 
 import checkers from "./_castleCheckers";
 
-import { ImmutableDictionary, ImmutableCollection, PropTypes } from "castle";
+import { Dictionary, Collection, PropTypes } from "castle";
 
 describe("Collections", () => {
 
     describe("initialization", () => {
 
-        class Car extends ImmutableDictionary {
+        class Car extends Dictionary {
             static schema = {
                 wheels: PropTypes.number
             }
         }
 
-        class Cars extends ImmutableCollection {
+        class Cars extends Collection {
             static type = Car;
         }
 
@@ -24,7 +25,9 @@ describe("Collections", () => {
         it("should accept valid data", () => {
             checkInitializationSuccess(
                 [{ wheels: 5 }],
-                cars => expect(cars.get(0).get("wheels")).toEqual(5)
+                cars => {
+                    expect(cars.get(0).get("wheels")).toEqual(5)
+                }
             );
         });
 

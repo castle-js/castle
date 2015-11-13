@@ -4,7 +4,7 @@ const Errors = require("./Errors");
 module.exports = (name, valueName, valueSymbol, ownerClass) => {
     // TODO: Tests
 
-    let flagSymbol = global.Symbol ? Symbol(`${valueName}_wasSet`) : `@@${valueName}_wasSet_s4yAMAsweUm6Nq`;
+    let flagSymbol = typeof Symbol !== "undefined" ? Symbol(`${valueName}_wasSet`) : `@@${valueName}_wasSet_s4yAMAsweUm6Nq`;
 
     return function(value) {
         if (value == null) {

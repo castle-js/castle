@@ -27,7 +27,11 @@ module.exports = {
             {
                 test: /\.js$/,
                 exclude: /(node_modules)/,
-                loader: "babel?stage=0"
+                loader: "babel",
+                query: {
+                    cacheDirectory: true,
+                    presets: [ "es2015", "stage-1" ]
+                }
             },
             {
                 test: /\.ts$/,
@@ -57,6 +61,9 @@ module.exports = {
         new webpack.DefinePlugin({
             __DEV__:       !isProduction,
             __PRODUCTION__: isProduction
+        }),
+        new webpack.ProvidePlugin({
+            'polyfill': 'imports?this=>global!exports?global.polyfill!babel-polyfill'
         })
     ],
     devServer: {

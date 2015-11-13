@@ -2,11 +2,9 @@ Castle.js
 =========
 
 Provides 2 immutable data structures – **Dictionary** and **Collection**. Each of them guarantees,
-that containing data is valid once created and until it's properties wasn't modified directly.
+that containing data is always valid once created.
 
-Immutable versions of those – **ImmutableDictionary** and **ImmutableCollection** cannot be broken at all.
-Using them requires [Immutable.js](https://facebook.github.io/immutable-js/) to be accessible
-(should be installed separetely in non-node.js environment)
+**Supports**: node.js, modern browsers, IE9+
 
 
 Getting started
@@ -29,23 +27,18 @@ var Castle = require("castle");
 import Castle from "castle";
 // or
 import { PropTypes, Dictionary, Collection } from "castle";
-// or
-import { PropTypes, ImmutableDictionary, ImmutableCollection } from "castle";
 ```
 
 otherwise just attach castle.js:
 
 ```html
 <head>
-    <!-- #if you wish to use ImmutableDictionary/ImmutableCollection -->
-    <script src="<path>/immutable.js"></script>
-    <!-- #endif -->
     <script src="<path>/castle.js"></script>
 </head>
 ```
 
 
-Attach type type-definition file if using [TypeScript](http://www.typescriptlang.org/):
+Include type type-definition if using [TypeScript](http://www.typescriptlang.org/):
 
 ```javascript
 ///<reference path='./node_modules/castle/dist/Castle.d.ts'/>
@@ -58,10 +51,15 @@ Dictionary
 Dictionary is a key-value map, with pre-defined describing schema and (optionally) default values.
 
 Any data, not described in schema will be filtered, if given data doesn't satisfy schema,
-or if needed properties are missing and no default provided, Error will occur.
+or if any property is missing and no default one provided, Error will occur.
 
 
-**ES5 syntax**
+**Methods**
+
+* get(key)
+* set(key, value)
+* deepEqual(anotherDictionary)
+
 
 ```javascript
 var Person = Castle.Dictionary.extend("Person", {
@@ -72,22 +70,25 @@ var Person = Castle.Dictionary.extend("Person", {
     defaults: {
         age: 18
     }
+    // any additional static methods
+}, {
+    // any additional instance methods
 });
 
 // or:
 
 var Person = Castle.Dictionary.extend("Person")
-                .setSchema({
-                    name: Castle.PropTypes.string,
-                    age: Castle.PropTypes.number
-                })
-                .setDefaults({
-                    age: 21
-                });
+    .setSchema({
+        name: Castle.PropTypes.string,
+        age: Castle.PropTypes.number
+    })
+    .setDefaults({
+        age: 21
+    });
 ```
 
 
-**ES2015 syntax**
+**ES2015 stage-1 / TypeScript syntax** (Note, that Babel by default won't make it usable with IE < 11 due to [#2450](https://github.com/babel/babel/issues/2450))
 
 ```javascript
 class Person extends Castle.Dictionary {
@@ -103,33 +104,22 @@ class Person extends Castle.Dictionary {
 }
 ```
 
+
 #### Serializing Dictionary data
 
-```
+```javascript
 var jsonData = { name: "John", surname: "Lennon" }
 
-Person.serialize(
-    jsonData,
-    function errorCallback(error) {
+// When calling constructor directly, errors are being thrown. That's great when using Promises:
+
+window.fetch("/user.json")
+    .then(response => response.json())
+    .then(json => new Person(json))
+    .catch(e => {
         // handle error
-    },
-    successCallback(john) {
-        console.log(john.name); // John
-        console.log(john.age);  // 21
-    }
-);
-
-
-// “serialize” returning value is instance or null:
-
-var mayBeJohn = Person.serialize(jsonData, someErrorCallback);
-if (mayBeJohn !== null) {
-    console.log(mayBeJohn.name); // John
-    console.log(mayBeJohn.age);  // 21
-}
-
-
-// or use try-catch with direct calling constructor (may be slower):
+    })
+    
+// or:
 
 try {
     var john = new Person(jsonData);
@@ -138,7 +128,57 @@ try {
 } catch (error) {
     // handle error
 }
+
+// or:
+
+Person.serialize(
+    jsonData,
+    function(error) {
+        // handle error
+    },
+    function(john) {
+        console.log(john.name); // John
+        console.log(john.age);  // 21
+    }
+);
+
+// “serialize” returning value is instance of Dictionary or null:
+
+var mayBeJohn = Person.serialize(jsonData, someErrorCallback);
+if (mayBeJohn !== null) {
+    console.log(mayBeJohn.name); // John
+    console.log(mayBeJohn.age);  // 21
+}
 ```
+
+
+#### Use Dictionary
+
+```js
+console.log(john.age); // 21
+console.log(john.get("age")); // 21
+var newJohn = john.set("age", 45);
+console.log(newJohn.age); // 45
+console.log(john === newJohn); // false
+
+// Properties are immutable:
+newJohn.age = 99;
+console.log(newJohn.age); // 45
+```
+
+It's impossible to set invalid value:
+
+```javascript
+var newJohn = john.set("age", ["I like arrays"]);
+console.log(newJohn.get("age")); // 21
+console.log(john === newJohn) // true
+
+// Error can be handled (otherwise it'll be printed to console):
+var newJohn = john.set("age", ["I like arrays"], function(error) {
+    console.log(error); // Error: Invalid prop `age` of type `array` supplied to `Person`, expected `number`
+});
+```
+
 
 
 Collection
@@ -147,32 +187,50 @@ Collection
 Collection is just a list of dictionaries of defined type.
 
 
-**ES5 syntax**
+**Methods**
+
+* get(index)
+* set(index, value)
+* deepEqual(anotherCollection)
+* forEach — like [Array.prototype.forEach](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach)
+* map     — like [Array.prototype.map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map)
+* filter  — like [Array.prototype.filter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter)
+* sort    — like [Array.prototype.sort](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort)
+* indexOf — like [Array.prototype.indexOf](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf)
+* slice   — like [Array.prototype.slice](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice)
+* pop     — like [Array.prototype.pop](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/pop)
+* reduce  — like [Array.prototype.reduce](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce)
+
 
 ```javascript
+
+var People = Person.createCollection();
+
+// or:
+
 var People = Castle.Collection.extend("People", {
-    type:  Person.getTypeChecker();
+    type: Person
 });
 
 // or:
 
 var People = Castle.Collection.extend("People")
-                .setType(Person.getTypeChecker());
+    .setType(Person);
 ```
 
 
-**ES2015 syntax**
+**ES2015 stage-1 / TypeScript syntax** (Again, note, that Babel by default won't make it usable with IE < 11 due to [#2450](https://github.com/babel/babel/issues/2450))
 
 ```javascript
 class People extends Castle.Collection {
-    static type = Person.getTypeChecker();
+    static type = Person;
 }
 ```
 
 
 #### Serializing Collection data
 
-```
+```javascript
 var jsonData = [
     { name: "John",   surname: "Lennon"    },
     { name: "Paul",   surname: "McCartney" },
@@ -180,28 +238,17 @@ var jsonData = [
     { name: "Ringo",  surname: "Starr"     }
 ];
 
-People.serialize(
-    jsonData,
-    function errorCallback(error) {
+
+// When calling constructor directly, errors are being thrown. That's great when using Promises:
+
+window.fetch("/band.json")
+    .then(response => response.json())
+    .then(json => new Person(json))
+    .catch(e => {
         // handle error
-    },
-    successCallback(band) {
-        console.log(band.length);  // 4
-        console.log(band[0].name); // John
-    }
-);
+    })
 
-
-// “serialize” returning value is instance or null:
-
-var mayBeBand = People.serialize(jsonData, someErrorCallback);
-if (mayBeBand !== null) {
-    console.log(mayBeBand.length);  // 4
-    console.log(mayBeBand[0].name); // John
-}
-
-
-// or use try-catch with direct calling constructor (may be slower):
+// or:
 
 try {
     var band = new People(jsonData);
@@ -209,6 +256,27 @@ try {
     console.log(band[0].name); // John
 } catch (error) {
     // handle error
+}
+
+// or:
+
+People.serialize(
+    jsonData,
+    function(error) {
+        // handle error
+    },
+    function(band) {
+        console.log(band.length);  // 4
+        console.log(band[0].name); // John
+    }
+);
+
+// “serialize” returning value is instance of Collection or null:
+
+var mayBeBand = People.serialize(jsonData, someErrorCallback);
+if (mayBeBand !== null) {
+    console.log(mayBeBand.length);  // 4
+    console.log(mayBeBand[0].name); // John
 }
 ```
 
@@ -252,7 +320,7 @@ npm install
 
 #### Build
 
-`npm dist`
+`npm build`
 
 
 #### Running tests
@@ -260,6 +328,5 @@ npm install
 * `npm test` — run unit tests with Karma & PhantomJS
 * `npm run tests-all` — run tests in all browsers. Requirements:
     * Install [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
-    * `npm install -g iectrl`
-    * `iectrl install "IE9 - Win7"`
+    * Install IE9: `curl -s https://raw.githubusercontent.com/xdissent/ievms/master/ievms.sh | env IEVMS_VERSIONS="9" bash`
 

@@ -37,7 +37,7 @@ module.exports = function() {
 
     let subClass = new Function(
         `return function (pureConstructor, superClass, props) {
-            return function ${name} () {
+            return function ${name.match(/[\w\d_$]*/g).join("")} () {
                 superClass.apply(this, arguments);
                 pureConstructor.apply(this, arguments);
                 for (var p in props) if (props.hasOwnProperty(p)) this[p] = props[p];
@@ -45,9 +45,10 @@ module.exports = function() {
         };`
     )()(pureConstructor, superClass, props);
 
-    for (let p in superClass) { // TypeScript competible
+    for (let p in superClass) {
         if (superClass.hasOwnProperty(p)) subClass[p] = superClass[p];
     }
+
     for (let p in staticProps) {
         if (staticProps.hasOwnProperty(p)) subClass[p] = staticProps[p];
     }

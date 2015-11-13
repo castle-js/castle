@@ -23,6 +23,15 @@ module.exports = function (config) {
 
         webpackServer: {
             noInfo: true
+        },
+
+        customLaunchers: {
+            'IE9': {
+                base: 'VirtualBoxBrowser',
+                config: {
+                    vm_name: 'IE9 - Win7'
+                }
+            }
         }
 
     });

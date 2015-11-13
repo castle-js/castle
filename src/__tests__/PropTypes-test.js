@@ -1,8 +1,8 @@
 "use strict";
 
 const PropTypes = require("../PropTypes");
-const ImmutableDictionary = require("../ImmutableDictionary");
-const ImmutableCollection = require("../ImmutableCollection");
+const Dictionary = require("../Dictionary");
+const Collection = require("../Collection");
 
 const requiredMessage = "Required prop `testProp` was not specified in `testComponent`.";
 
@@ -249,17 +249,17 @@ describe("PropTypes", function() {
         });
     });
 
-    describe("ImmutableDictionary Types", function() {
+    describe("Dictionary Types", function() {
 
         it("should warn for invalid instances", function() {
-            class Person extends ImmutableDictionary {}
-            class Cat extends ImmutableDictionary {}
-            class Car extends ImmutableDictionary {
-                static schema = {
+            let Person = Dictionary.extend("Person");
+            let Cat = Dictionary.extend("Cat");
+            let Car = Dictionary.extend("Car", {
+                schema: {
                     weight: PropTypes.number.optional,
                     wheels: PropTypes.number
                 }
-            }
+            });
             var personName = Person.name || "<<anonymous>>";
 
             typeCheckFail(
@@ -294,8 +294,8 @@ describe("PropTypes", function() {
         });
 
         it("should not warn for valid values", function() {
-            class Person extends ImmutableDictionary {}
-            class Engineer extends Person {}
+            let Person = Dictionary.extend("Person");
+            let Engineer = Person.extend("Engineer");
 
             typeCheckPass(Person.getTypeChecker(), new Person({}));
             typeCheckPass(Person.getTypeChecker(), new Engineer({}));
@@ -303,13 +303,13 @@ describe("PropTypes", function() {
         });
 
         it("should not warn for optional values", function() {
-            class Person extends ImmutableDictionary {}
+            let Person = Dictionary.extend("Person");
             typeCheckPass(Person.getTypeChecker().optional, null);
             typeCheckPass(Person.getTypeChecker().optional, undefined);
         });
 
         it("should warn for missing required values", function() {
-            class Person extends ImmutableDictionary {}
+            let Person = Dictionary.extend("Person");
             typeCheckFail(
                 Person.getTypeChecker().isRequired, null, requiredMessage
             );
@@ -321,14 +321,14 @@ describe("PropTypes", function() {
     });
 
 
-    describe("ImmutableCollection Types", function() {
+    describe("Collection Types", function() {
 
         it("should warn for invalid instances", function() {
-            class Person extends ImmutableDictionary {}
-            class People extends ImmutableCollection {
-                static type = Person
-            }
-            class Deers extends ImmutableCollection {}
+            let Person = Dictionary.extend("Person");
+            let People = Collection.extend("People", {
+                type: Person
+            });
+            let Deers = Collection.extend("Deers");
             var peopleName = People.name || "<<anonymous>>";
             var personName = Person.name || "<<anonymous>>";
 
@@ -368,8 +368,8 @@ describe("PropTypes", function() {
         });
 
         it("should not warn for valid values", function() {
-            class People extends ImmutableCollection { }
-            class Engineers extends People { }
+            let People = Collection.extend("People");
+            let Engineers = People.extend("Engineers");
 
             typeCheckPass(People.getTypeChecker(), new People([]));
             typeCheckPass(People.getTypeChecker(), new Engineers([]));
@@ -377,13 +377,13 @@ describe("PropTypes", function() {
         });
 
         it("should not warn for optional values", function() {
-            class People extends ImmutableCollection {}
+            let People = Collection.extend("People");
             typeCheckPass(People.getTypeChecker().optional, null);
             typeCheckPass(People.getTypeChecker().optional, undefined);
         });
 
         it("should warn for missing required values", function() {
-            class People extends ImmutableCollection {}
+            let People = Collection.extend("People");
             typeCheckFail(
                 People.getTypeChecker().isRequired, null, requiredMessage
             );

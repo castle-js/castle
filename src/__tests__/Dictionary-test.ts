@@ -1,13 +1,14 @@
-"use strict";
+/// <reference path="../../typings/tsd.d.ts" />
+/// <reference path="../../typings/Castle.d.ts" />
 
 import checkers from "./_castleCheckers";
 import * as Castle from "castle";
 
-describe("ImmutableDictionary", function() {
+describe("Dictionary", function() {
 
     describe("initialization", () => {
 
-        class Person extends Castle.ImmutableDictionary {
+        class Person extends Castle.Dictionary {
             static schema = {
                 name: Castle.PropTypes.string
             }
@@ -50,7 +51,7 @@ describe("ImmutableDictionary", function() {
 
     describe("setShema method", () => {
 
-        class Duck extends Castle.ImmutableDictionary {}
+        class Duck extends Castle.Dictionary {}
 
         let returnValue = Duck.setSchema({
             eyes: Castle.PropTypes.number
@@ -71,7 +72,7 @@ describe("ImmutableDictionary", function() {
         });
 
         it("should throw when called on class with “shema” static prop", () => {
-            class DuckWithStatic extends Castle.ImmutableDictionary {
+            class DuckWithStatic extends Castle.Dictionary {
                 static schema = {}
             }
             expect(() => DuckWithStatic.setSchema({})).toThrowError(
@@ -79,9 +80,9 @@ describe("ImmutableDictionary", function() {
             );
         });
 
-        it("should throw error when calling on ImmutableDictionary itself", () => {
-            expect(() => Castle.ImmutableDictionary.setSchema({})).toThrowError(
-                "Attempted to call “setSchema” on class “ImmutableDictionary” itself"
+        it("should throw error when calling on Dictionary itself", () => {
+            expect(() => Castle.Dictionary.setSchema({})).toThrowError(
+                "Attempted to call “setSchema” on class “Dictionary” itself"
             );
         });
 

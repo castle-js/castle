@@ -1,23 +1,27 @@
 
 declare namespace Castle {
 
-    class ImmutableBase  {
+    class AbstractImmutable  {
 
         constructor(data: {});
 
-        static serialize(data: any, errorCb?: ((error: Error) => void), successCb?: (instance: ImmutableBase) => void): ImmutableBase;
+        static serialize(
+            data: any,
+            errorCb?: ((error: Error) => void),
+            successCb?: (instance: AbstractImmutable) => void
+        ): AbstractImmutable;
 
         get: (a: String, b?: any) => any;
 
     }
 
-    class ImmutableDictionary extends ImmutableBase {
+    class Dictionary extends AbstractImmutable {
 
         static setSchema: (schema: any) => any;
 
     }
 
-    class ImmutableCollection extends ImmutableBase {
+    class Collection extends AbstractImmutable {
 
         constructor(data: any[]);
 
@@ -42,10 +46,10 @@ declare namespace Castle {
         object: CanBeOptional<any>,
         string: CanBeOptional<any>,
 
-        arrayOf:             (type: Validator<any>) => CanBeOptional<any>,
-        instanceOf:          (expectedClass: {}) => CanBeOptional<any>,
-        //dictionary: (expectedDictionary: typeof Dictionary) => CanBeOptional<any>,
-        //dollection: (expectedCollection: typeof Collection) => CanBeOptional<any>,
+        arrayOf:    (type: Validator<any>) => CanBeOptional<any>,
+        instanceOf: (expectedClass: {}) => CanBeOptional<any>,
+        dictionary: (expectedDictionary: typeof Dictionary) => CanBeOptional<any>,
+        dollection: (expectedCollection: typeof Collection) => CanBeOptional<any>,
     };
 
 }

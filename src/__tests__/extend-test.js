@@ -1,10 +1,10 @@
 "use strict";
 
-const ImmutableDictionary = require("../ImmutableDictionary");
+const Dictionary = require("../Dictionary");
 
 describe("extend", () => {
 
-    var Person = ImmutableDictionary.extend(
+    var Person = Dictionary.extend(
         function PersonClass() {
             this.personProp = true;
         },
@@ -53,7 +53,7 @@ describe("extend", () => {
         expect(
             child instanceof Child
             && child instanceof Person
-            && child instanceof ImmutableDictionary
+            && child instanceof Dictionary
         ).toBeTruthy()
     });
 
