@@ -1,5 +1,7 @@
 "use strict";
 
+const parseWithSchema = require("./utils/parseWithSchema");
+
 const PropTypes = {
 
     array:  createPrimitiveTypeChecker("array"),
@@ -12,7 +14,8 @@ const PropTypes = {
     arrayOf:    createArrayOfTypeChecker,
     instanceOf: createInstanceTypeChecker,
     dictionary: createDictionaryTypeChecker,
-    collection: createCollectionTypeChecher
+    collection: createCollectionTypeChecher,
+    schema:     createSchemaTypeChecker
 
 };
 
@@ -103,6 +106,24 @@ function createInstanceTypeChecker(expectedClass) {
     }
     return createChainableTypeChecker(validate);
 }
+
+
+function createSchemaTypeChecker(schema) {
+    function validate(props, propName, componentName, location, propFullName) {
+
+        let propValue = props[propName];
+
+        if (getClassName(propValue) == "Object") {
+            return parseWithSchema(schema, propValue);
+        } else {
+            let locationName = ReactPropTypeLocationNames[location];
+            return new Error(`Invalid ${locationName} \`${propFullName}\` of type \`${getClassName(propValue)}\` supplied to \`${componentName}\`, expected an \`object\`.`);
+        }
+    }
+
+    return createChainableTypeChecker(validate);
+}
+
 
 function createDictionaryTypeChecker(dictionaryConstructor) {
     function validate(props, propName, componentName, location, propFullName) {
